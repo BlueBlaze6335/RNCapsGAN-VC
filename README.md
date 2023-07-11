@@ -1,40 +1,22 @@
 # RNCapsGAN-VC
-Unofficial **PyTorch** implementation of Kaneko et al.'s [**RNCapsGAN-VC**](http://www.kecl.ntt.co.jp/people/kaneko.takuhiro/projects/RNCapsgan-vc/index.html) (2021) for non-parallel voice conversion.
+**PyTorch** implementation of T Akhter's et al.'s **RNCapsGAN-VC** (2023) for non-parallel voice conversion.
 
 RNCapsGAN-VC is the state of the art method for non-parallel voice conversion using CycleGAN. It is trained using a novel auxiliary task of filling in frames (FIF) by applying a temporal mask to the input Mel-spectrogram. It demonstrates marked improvements over prior models such as CycleGAN-VC (2018), CycleGAN-VC2 (2019), and CycleGAN-VC3 (2020).
 
-<p align="center">
-<img src="imgs/MaskedCycleGAN-VC.png" width="500">
-<br>
-<b>Figure1: RNCapsGAN-VC Training</b>
-<br><br><br><br>
-</p>
 
 <p align="center">
-<img src="imgs/generator.png" width="800">
+<img src="assets/RNCapsGAN-VC.jpg" width="400">
 <br>
-<b>Figure2: RNCapsGAN-VC Generator Architecture</b>
+<b>Figure2: RNCapsGAN-VC Architecture</b>
 <br><br><br><br>
 </p>
-
-<p align="center">
-<img src="imgs/discriminator.png" width="500">
-<br>
-<b>Figure3: RNCapsGAN-VC PatchGAN Discriminator Architecture</b>
-<br><br><br><br>
-</p>
-
-Paper: https://arxiv.org/pdf/2102.12841.pdf
-
-Repository Contributors: [Claire Pajot](https://github.com/cmpajot), [Hikaru Hotta](https://github.com/HikaruHotta), [Sofian Zalouk](https://github.com/szalouk)
-
 
 ## Setup
 
 Clone the repository.
 
 ```
-git clone git@github.com:GANtastic3/RNCapsGAN-VC.git
+git clone git@github.com:BlueBlaze6335/RNCapsGAN-VC.git
 cd RNCapsGAN-VC
 ```
 
