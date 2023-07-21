@@ -1,13 +1,13 @@
 # RNCapsGAN-VC
 **PyTorch** implementation of T Akhter's et al.'s **RNCapsGAN-VC** (2023) for non-parallel voice conversion.
 
-RNCapsGAN-VC is the state of the art method for non-parallel voice conversion using CycleGAN. It is trained using a novel auxiliary task of filling in frames (FIF) by applying a temporal mask to the input Mel-spectrogram. It demonstrates marked improvements over prior models such as CycleGAN-VC (2018), CycleGAN-VC2 (2019), and CycleGAN-VC3 (2020).
+RNCapsGAN-VC is a new proposed method for non-parallel voice conversion using SOTA CycleGAN framework. It is trained using a novel normalization technique and Capsule networks.
 
 
 <p align="center">
 <img src="assets/RNCapsGAN-VC.jpg" width="400">
 <br>
-<b>Figure2: RNCapsGAN-VC Architecture</b>
+<b>Figure 1: RNCapsGAN-VC Architecture</b>
 <br><br><br><br>
 </p>
 
@@ -18,12 +18,6 @@ Clone the repository.
 ```
 git clone git@github.com:BlueBlaze6335/RNCapsGAN-VC.git
 cd RNCapsGAN-VC
-```
-
-Create the conda environment.
-```
-conda env create -f environment.yml
-conda activate RNCapsGAN-VC
 ```
 
 ## VCC2018 Dataset
@@ -71,8 +65,8 @@ python data_preprocessing/preprocess_vcc2018.py \
 
 Train RNCapsGAN-VC to convert between `<speaker_A_id>` and `<speaker_B_id>`. You should start to get excellent results after only several hundred epochs.
 ```
-python -W ignore::UserWarning -m mask_cyclegan_vc.train \
-    --name mask_cyclegan_vc_<speaker_id_A>_<speaker_id_B> \
+python -W ignore::UserWarning -m RNCapsGAN.train \
+    --name RNCapsGAN_<speaker_id_A>_<speaker_id_B> \
     --seed 0 \
     --save_dir results/ \
     --preprocessed_data_dir vcc2018_preprocessed/vcc2018_training/ \
@@ -80,9 +74,9 @@ python -W ignore::UserWarning -m mask_cyclegan_vc.train \
     --speaker_B_id <speaker_B_id> \
     --epochs_per_save 100 \
     --epochs_per_plot 10 \
-    --num_epochs 6172 \
+    --num_epochs 502 \
     --batch_size 1 \
-    --lr 5e-4 \
+    --lr 1e-4 \
     --decay_after 1e4 \
     --sample_rate 22050 \
     --num_frames 64 \
@@ -102,14 +96,14 @@ tensorboard --logdir results/logs
 Test your trained RNCapsGAN-VC by converting between `<speaker_A_id>` and `<speaker_B_id>` on the evaluation dataset. Your converted .wav files are stored in `results/<name>/converted_audio`.
 
 ```
-python -W ignore::UserWarning -m mask_cyclegan_vc.test \
-    --name mask_cyclegan_vc_VCC2SF3_VCC2TF1 \
+python -W ignore::UserWarning -m mask_RNCapsGAN_vc.test \
+    --name RNCapsGAN_VCC2SF3_VCC2TF1 \
     --save_dir results/ \
     --preprocessed_data_dir vcc2018_preprocessed/vcc2018_evaluation \
     --gpu_ids 0 \
     --speaker_A_id VCC2SF3 \
     --speaker_B_id VCC2TF1 \
-    --ckpt_dir /data1/cycleGAN_VC3/mask_cyclegan_vc_VCC2SF3_VCC2TF1/ckpts \
+    --ckpt_dir /data1/RNCapsGAN_VC/RNCapsGAN_VCC2SF3_VCC2TF1/ckpts \
     --load_epoch 500 \
     --model_name generator_A2B \
 ```
@@ -120,20 +114,19 @@ Select the epoch to load your model from by setting `--load_epoch`.
 
 ## Code Organization
 ```
-├── README.md                       <- Top-level README.
-├── environment.yml                 <- Conda environment
+├── README.md                       <- README.
 ├── .gitignore
 ├── LICENSE
 |
 ├── args
 │   ├── base_arg_parser             <- arg parser
 │   ├── train_arg_parser            <- arg parser for training (inherits base_arg_parser)
-│   ├── cycleGAN_train_arg_parser   <- arg parser for training RNCapsGAN-VC (inherits train_arg_parser)
-│   ├── cycleGAN_test_arg_parser    <- arg parser for testing RNCapsGAN-VC (inherits base_arg_parser)
+│   ├── RNCapsGAN_train_arg_parser  <- arg parser for training RNCapsGAN-VC (inherits train_arg_parser)
+│   ├── RNCapsGAN_test_arg_parser   <- arg parser for testing RNCapsGAN-VC (inherits base_arg_parser)
 │
 ├── bash_scripts
-│   ├── mask_cyclegan_train.sh      <- sample script to train RNCapsGAN-VC
-│   ├── mask_cyclegan_test.sh       <- sample script to test RNCapsGAN-VC
+│   ├── RRCapsGAN_train.sh          <- sample script to train RNCapsGAN-VC
+│   ├── RRCapsGAN_test.sh           <- sample script to test RNCapsGAN-VC
 │
 ├── data_preprocessing
 │   ├── preprocess_vcc2018.py       <- preprocess VCC2018 dataset
@@ -142,20 +135,21 @@ Select the epoch to load your model from by setting `--load_epoch`.
 │   ├── vc_dataset.py               <- torch dataset class for RNCapsGAN-VC
 │
 ├── logger
-│   ├── base_logger.sh              <- logging to Tensorboard
-│   ├── train_logger.sh             <- logging to Tensorboard during training (inherits base_logger)
+│   ├── base_logger.py              <- logging to Tensorboard
+│   ├── train_logger.py            <- logging to Tensorboard during training (inherits base_logger)
 │
 ├── saver
 │   ├── model_saver.py              <- saves and loads models
 │
-├── mask_cyclegan_vc
+├── RNCapsGAN
 │   ├── model.py                    <- defines RNCapsGAN-VC model architecture
 │   ├── train.py                    <- training script for RNCapsGAN-VC
 │   ├── test.py                     <- training script for RNCapsGAN-VC
 │   ├── utils.py                    <- utility functions to train and test RNCapsGAN-VC
+│   ├── layers.py                   <- model layers used to train and test RNCapsGAN-VC
 
 ```
 
 ## Acknowledgements
 
-This repository was inspired by [jackaduma](https://github.com/jackaduma)'s implementation of [CycleGAN-VC2](https://github.com/jackaduma/CycleGAN-VC2).
+This repository was inspired by the implementation of [MaskCycleGAN-VC](https://github.com/GANtastic3/MaskCycleGAN-VC).
